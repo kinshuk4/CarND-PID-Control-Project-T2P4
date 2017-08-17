@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <math.h>
-
+const int length_p = 3;
 class PID {
 public:
     /*
@@ -46,6 +46,9 @@ public:
     double TotalError();
 
     void setTaus(double p[]);
+
+    void twiddle(double cte, double tolerance=0.0001);
+
 };
 
 #endif /* PID_H */
