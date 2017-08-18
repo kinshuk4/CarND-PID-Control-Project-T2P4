@@ -28,7 +28,7 @@ void Twiddler::twiddle(double *p, double tol = 0.0001) {
     int i = 0;
 
     while (sum > tol) {
-        cout << "Iteration " << i << "Best error" << best_err;
+        cout << "Iteration " << i << "Best error" << best_err << ";;;;";
         for (int j = 0; j < length_p2; j++) {
 
             // Twiddle Up
@@ -60,6 +60,8 @@ void Twiddler::twiddle(double *p, double tol = 0.0001) {
         sum = dp[0] + dp[1] + dp[2];
         i += 1;
     }
+
+    cout << "TAUS: " << p[0] << p[1] << p[2] << endl;
 }
 
 

@@ -16,8 +16,9 @@ double deg2rad(double x) { return x * pi() / 180; }
 double rad2deg(double x) { return x * 180 / pi(); }
 
 const double max_steering = 1.0;
-const double target_speed = 0.75;
+const double target_throttle = 0.75;
 double p[3] = {0.0, 0.0, 0.0};
+double q[3] = {0.0, 0.0, 0.0};
 //Modify the twiddle flag to enable or disable twiddle
 bool twiddle_flag = false;
 
@@ -51,7 +52,7 @@ double modulate_throttle_by_steering_discrete(double steering_value) {
     } else if (absolute_steering_angle >= 0.2) {
         throttle_value = 0.5;
     } else {
-        throttle_value = target_speed;
+        throttle_value = target_throttle;
     }
     return throttle_value;
 }
@@ -70,13 +71,10 @@ double fix_steering(double current_steer) {
 
 int main() {
     uWS::Hub h;
-    p[0] = 0.3; // Kp
-    p[1] = 0.001; // Ki
-    p[2] = 4.0; // Kd
     PID pid_steer, pid_throttle;
     // DONE: Initialize the pid variable.
-    pid_steer.Init(0.3, 0.001, 3.0);
-    pid_throttle.Init(0.3, 0.0000, 0.02);
+    pid_steer.Init(0.15, 0.0002, 2.0);
+    pid_throttle.Init(0.2, 0.0, 0.02);
 
     h.onMessage(
             [&pid_steer, &pid_throttle](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
@@ -112,9 +110,9 @@ int main() {
                             if (twiddle_flag) {
                                 Twiddler twiddler;
                                 twiddler.Init(pid_throttle, cte);
-                                twiddler.twiddle(p, 0.0001);
+                                twiddler.twiddle(q, 0.0001);
                             }
-                            throttle_value = fmin(target_speed + pid_throttle.TotalError(),
+                            throttle_value = fmin(target_throttle + pid_throttle.TotalError(),
                                                   modulate_throttle_by_steering_discrete(steer_value));
 
                             // DEBUG

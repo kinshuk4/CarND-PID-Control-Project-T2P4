@@ -47,8 +47,6 @@ public:
 
     void setTaus(double p[]);
 
-    void twiddle(double cte, double tolerance=0.0001);
-
 };
 
 #endif /* PID_H */

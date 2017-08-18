@@ -36,49 +36,5 @@ double PID::TotalError() {
 }
 
 
-void PID::twiddle(double cte, double tol) {
-    // Twiddle variable declarations
-    double p[3] = {0.0, 0.0, 0.0};
-    double dp[3] = {1.0, 1.0, 1.0};
-    double tw_err = 0.0;
-    double sum = dp[0] + dp[1] + dp[2];
-    double best_err = fabs(this->TotalError());
 
-
-    this->Init(p[0], p[1], p[2]);
-
-    int i = 0;
-
-    while (sum > tol) {
-        cout << "Iteration " << i << "Best error" << best_err;
-        for (int j = 0; j < length_p; j++) {
-            // Twiddle Up
-            p[j] += dp[j];
-            this->setTaus(p);
-            this->UpdateError(cte);
-            tw_err = fabs(this->TotalError());
-
-            if (tw_err < best_err) {
-                best_err = tw_err;
-                dp[j] *= 1.1;
-            } else {
-                // Twiddle Down
-                p[j] -= 2 * dp[j];
-                this->setTaus(p);
-                this->UpdateError(cte);
-                tw_err = fabs(this->TotalError()); // Take the absolute value of error
-
-                if (tw_err < best_err) {
-                    best_err = tw_err;
-                    dp[j] *= 1.1;
-                } else {
-                    p[j] += dp[j];
-                    dp[j] *= 0.9;
-                }
-            }
-        }
-        sum = dp[0] + dp[1] + dp[2];
-        i += 1;
-    }
-}
 
